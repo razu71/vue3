@@ -1,20 +1,23 @@
 <template>
   <div class="row">
     <div class="col-6 offset-3">
-      <h1>DC Heros <span class="badge bg-info">{{noOfHero}}</span></h1>
+      <h2>Todo Tasks <span class="badge bg-info">{{noOfTask}}</span></h2>
       <ul class="list-group">
-        <li class="list-group-item" v-for="(hero, index) in dcHeroes" :key="index">
+        <li class="list-group-item" v-for="(hero, index) in tasks" :key="index">
           <div class="d-flex justify-content-between">
             {{ hero }} <button class="float-right btn btn-danger badge badge-danger" @click="removeHero(index)">X</button>
           </div>
         </li>
       </ul>
+      <br>
 
       <form @submit.prevent="addNewHero(); newHero = ''">
         <div class="form-group">
-          <label>Enter a name</label>
-          <input class="form-control" v-model.trim="newHero" v-on:input="isActive = false" placeholder="Add a new task">
-          <button class="btn btn-outline-info">Add Task</button>
+          <label>Enter a task name</label>
+          <div class="d-flex">
+            <input class="form-control" v-model.trim="newHero" v-on:input="isActive = false" placeholder="Add a new task">
+            <button class="btn btn-outline-info col-2">Add Task</button>
+          </div>
         </div>
       </form>
 
@@ -24,16 +27,14 @@
 </template>
 
 <script>
-import {ref, computed, watch} from "vue";
-import Header from "./Header.vue";
+import {ref, computed} from "vue";
 
 export default {
   name: "DcHero",
-  components:{ Header },
   setup() {
 
     //variables
-    const dcHeroes = ref([
+    const tasks = ref([
       'Reading a book',
       'Make a work schedule',
       'Go to market',
@@ -45,21 +46,21 @@ export default {
     //methods
     const addNewHero = () =>{
       if (newHero.value){
-        dcHeroes.value.push(newHero.value)
+        tasks.value.push(newHero.value)
       }
     }
 
     //computed property
-    const noOfHero = computed(() => {
-      return dcHeroes.value.length;
+    const noOfTask = computed(() => {
+      return tasks.value.length;
     });
 
     const removeHero = (index) =>{
-      dcHeroes.value = dcHeroes.value.filter((_,i) => i !== index);
-      // dcHeroes.value.splice(index, 1);
+      tasks.value = tasks.value.filter((_,i) => i !== index);
+      // tasks.value.splice(index, 1);
     }
 
-    return {dcHeroes, newHero, isActive, addNewHero, noOfHero, removeHero};
+    return {tasks, newHero, isActive, addNewHero, noOfTask, removeHero};
   }
 }
 </script>

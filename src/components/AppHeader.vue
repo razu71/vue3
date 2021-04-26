@@ -26,11 +26,10 @@
 
 <script>
 import {ref, computed} from 'vue';
-import Header from "../pages/Todo/Header.vue";
 import firebase from '../utilities/firbase.js'
 
 export default {
-  components: {Header, firebase},
+  components: {firebase},
   props: ['showLoginModal', 'showSignUpModal', 'logOut'],
   name: "AppHeader",
   setup() {

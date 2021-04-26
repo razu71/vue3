@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 
-import Todo from './pages/Todo/Todo.vue'
+import Todo from './pages/Todo.vue'
 import Calendar from './pages/Calender/Calander.vue'
 import Home from './pages/Home.vue'
 import MarkDown from './pages/markdown.vue'
