@@ -1,8 +1,10 @@
 <template>
-  <AppHeader :showLoginModal="showLoginModal" :showSignUpModal="showSignUpModal" :logOut="logOut"/>
+  <AppHeader :showLoginModal="showLoginModal" :showSignUpModal="showSignUpModal" :logOut="logOut" :isLoggedIn="isLoggedIn"/>
   <router-view></router-view>
-  <LoginModal v-show="isLoginModalVisible" @close="closeLoginModal" :closeLoginModal="closeLoginModal"/>
-  <SignUpModal v-show="isSignUpModalVisible" @close="closeSignUpModal" :closeSignUpModal="closeSignUpModal"/>
+  <teleport to="body">
+    <LoginModal v-show="isLoginModalVisible" @close="closeLoginModal" :closeLoginModal="closeLoginModal"/>
+    <SignUpModal v-show="isSignUpModalVisible" @close="closeSignUpModal" :closeSignUpModal="closeSignUpModal"/>
+  </teleport>
 </template>
 
 <script>
@@ -11,7 +13,8 @@ import AppHeader from './components/AppHeader.vue'
 import LoginModal from './components/Modal/LogInModal.vue'
 import SignUpModal from './components/Modal/SignUpModal.vue'
 import firebase from './utilities/firbase.js'
-import router from "./router";
+import {useRouter} from 'vue-router'
+import {useStore} from 'vuex'
 
 export default {
   inheritAttrs: false,
@@ -21,6 +24,8 @@ export default {
     const isSignUpModalVisible = ref(false);
     const isLoggedIn = ref(false);
     const authUser = ref({});
+    const router = useRouter()
+    const store = useStore()
 
     const showLoginModal = () => {
       isLoginModalVisible.value = true;
@@ -42,21 +47,22 @@ export default {
     onMounted(() => {
       firebase.auth().onAuthStateChanged((user) => {
         if (user) {
-          isLoggedIn.value = true
-          authUser.value = user
+          store.commit("setIsLoggedIn", true);
+          store.commit("setLoginModal", false);
+          store.commit("setAuthUser", user);
         } else {
-          isLoggedIn.value = false
-          authUser.value = {}
+          store.commit("setIsLoggedIn", false);
+          store.commit("setAuthUser", {});
         }
       });
     })
 
     //logout a user
-    const logOut = () =>{
+    const logOut = () => {
       firebase.auth().signOut().then(() => {
-        isLoggedIn.value = false
-        authUser.value = {}
-        router.push('/')
+        store.commit("setIsLoggedIn", false);
+        store.commit("setAuthUser", {});
+        router.replace('/')
       }).catch((error) => {
         console.log(error)
       });
@@ -70,6 +76,7 @@ export default {
       closeLoginModal,
       closeSignUpModal,
       logOut,
+      isLoggedIn
     };
   }
 }

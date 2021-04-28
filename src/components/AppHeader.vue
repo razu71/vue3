@@ -10,15 +10,13 @@
         <li class="nav-item" v-for="item in items" :key="item.to">
           <router-link :to="item.to">{{ item.title }}</router-link>
         </li>
-        <li class="nav-item">
-          <button type="button" class="btn" @click="showLoginModal">Login</button>
-        </li>
-        <li class="nav-item">
-          <button type="button" class="btn" @click="showSignUpModal">Sign Up</button>
-        </li>
-        <li class="nav-item">
+        <li v-if="isLoggedIn" class="nav-item">
           <button type="button" class="btn" @click="logOut">Log Out</button>
         </li>
+        <li v-else class="nav-item">
+          <button type="button" class="btn" @click="showLoginModal">Login</button>
+        </li>
+
       </ul>
     </div>
   </nav>
@@ -27,13 +25,15 @@
 <script>
 import {ref, computed} from 'vue';
 import firebase from '../utilities/firbase.js'
+import {useStore} from 'vuex'
 
 export default {
   components: {firebase},
-  props: ['showLoginModal', 'showSignUpModal', 'logOut'],
+  props: ['showLoginModal', 'showSignUpModal', 'logOut', 'isLoggedIn'],
   name: "AppHeader",
   setup() {
     const activeClass = ref('');
+    const store = useStore();
 
     const items = ref([
       {title: 'Home', to: '/'},
@@ -43,7 +43,11 @@ export default {
       {title: 'Slider', to: '/slider'}
     ]);
 
-    return {items, activeClass};
+    const isLoggedIn = computed(() => {
+        return store.state.isLoggedIn;
+    })
+
+    return {items, activeClass, isLoggedIn};
   }
 }
 </script>

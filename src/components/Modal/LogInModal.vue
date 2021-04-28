@@ -51,7 +51,6 @@ export default {
           })
           .catch((error) => {
             isLoading.value = false;
-            props.closeLoginModal();
           });
     }
 
